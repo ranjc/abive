@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN "
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.abive.dao.passport.UserDaoImpl">
+
+    <sql id="table_name">user this</sql>
+
+    <sql id="field_list">
+        this.id,
+        this.account,
+        this.name,
+        this.password,
+        this.email,
+        this.tel,
+        this.icon,
+        this.level,
+        this.create_time,
+        this.update_time,
+        this.create_ip,
+        this.update_ip,
+        this.mark
+    </sql>
+
+    <resultMap id="UserMap" type="com.abive.domain.passport.User">
+        <result property="id" column="id" />
+        <result property="account" column="account" />
+        <result property="name" column="name" />
+        <result property="password" column="password" />
+        <result property="email" column="email" />
+        <result property="tel" column="tel" />
+        <result property="icon" column="icon" />
+        <result property="level" column="level" />
+        <result property="createTime" column="createTime" />
+        <result property="updateTime" column="updateTime" />
+        <result property="createIp" column="createIp" />
+        <result property="updateIp" column="updateIp" />
+        <result property="mark" column="mark" />
+    </resultMap>
+
+    <resultMap id="UserVoMap" type="com.abive.domain.passport.User"
+               extends="UserMap">
+        <!-- TODO -->
+    </resultMap>
+
+    <sql id="condition">
+        <where>
+            <if test="id != null">
+                and this.id=#{id}
+            </if>
+            <if test="account != null">
+                and account=#{account}
+            </if>
+            <if test="name != null">
+                and this.name like CONCAT('%', #{name}, '%')
+            </if>
+            <if test="email != null">
+                and this.email=#{email}
+            </if>
+            <if test="tel != null">
+                and this.tel=#{tel}
+            </if>
+            <if test="level != null">
+                and this.level=#{level}
+            </if>
+            <if test="mark != null">
+                and this.mark=#{mark}
+            </if>
+        </where>
+    </sql>
+
+    <select id="count" resultType="int">
+        SELECT count(1) as value FROM
+        <include refid="table_name" />
+        <include refid="condition" />
+    </select>
+
+    <select id="find" resultMap="UserMap">
+        SELECT
+        <include refid="field_list" />
+        FROM
+        <include refid="table_name" />
+        WHERE this.id = #{id}
+    </select>
+
+    <select id="list" resultMap="UserMap">
+        SELECT
+        <include refid="field_list" />
+        FROM
+        <include refid="table_name" />
+        <include refid="condition" />
+    </select>
+
+    <select id="listVo" resultMap="UserVoMap">
+        SELECT
+        <include refid="field_list" />
+        <!-- TODO -->
+        FROM
+        <include refid="table_name" />
+        <include refid="condition" />
+    </select>
+
+    <select id="page" resultMap="UserMap">
+        SELECT
+        <include refid="field_list" />
+        FROM
+        <include refid="table_name" />
+        <include refid="condition" />
+        <if test="paging == true">
+            LIMIT #{start},#{pageSize}
+        </if>
+    </select>
+
+    <select id="pageVo" resultMap="UserVoMap">
+        SELECT
+        <include refid="field_list" />
+        <!-- TODO -->
+        FROM
+        <include refid="table_name" />
+        <include refid="condition" />
+        <if test="paging == true">
+            LIMIT #{start},#{pageSize}
+        </if>
+    </select>
+
+    <insert id="insert">
+        <![CDATA[
+			INSERT INTO
+			kb_user(erp,name,password,email,path,lastLoginTime,createTime,updateTime,creater,amender,mark)
+			VALUES(#{erp},#{name},#{password},#{email},#{path},#{lastLoginTime},#{createTime},#{updateTime},#{creater},#{amender},#{mark})
+		]]>
+        <selectKey resultType="int" keyProperty="id">
+            SELECT LAST_INSERT_ID() AS ID
+        </selectKey>
+    </insert>
+
+    <update id="update">
+        UPDATE
+        <include refid="table_name" />
+        <set>
+            <if test="erp != null">
+                this.erp=#{erp},
+            </if>
+            <if test="name != null">
+                this.name=#{name},
+            </if>
+            <if test="password != null">
+                this.password=#{password},
+            </if>
+            <if test="email != null">
+                this.email=#{email},
+            </if>
+            <if test="icon != null">
+                this.icon=#{icon},
+            </if>
+            <if test="lastLoginTime != null">
+                this.lastLoginTime=#{lastLoginTime},
+            </if>
+            <if test="createTime != null">
+                this.createTime=#{createTime},
+            </if>
+            <if test="updateTime != null">
+                this.updateTime=#{updateTime},
+            </if>
+            <if test="creater != null">
+                this.creater=#{creater},
+            </if>
+            <if test="amender != null">
+                this.amender=#{amender},
+            </if>
+            <if test="mark != null">
+                this.mark=#{mark},
+            </if>
+        </set>
+        WHERE this.id=#{id}
+    </update>
+
+    <update id="updateByAccount">
+        UPDATE
+        <include refid="table_name" />
+        <set>
+            <if test="name != null">
+                this.name=#{name},
+            </if>
+            <if test="password != null">
+                this.password=#{password},
+            </if>
+            <if test="email != null">
+                this.email=#{email},
+            </if>
+            <if test="path != null">
+                this.path=#{path},
+            </if>
+            <if test="lastLoginTime != null">
+                this.lastLoginTime=#{lastLoginTime},
+            </if>
+            <if test="createTime != null">
+                this.createTime=#{createTime},
+            </if>
+            <if test="updateTime != null">
+                this.updateTime=#{updateTime},
+            </if>
+            <if test="creater != null">
+                this.creater=#{creater},
+            </if>
+            <if test="amender != null">
+                this.amender=#{amender},
+            </if>
+            <if test="mark != null">
+                this.mark=#{mark},
+            </if>
+        </set>
+        WHERE this.account=#{account}
+    </update>
+
+    <update id="clearIcon">
+        UPDATE
+        <include refid="table_name" />
+        SET icon=NULL WHERE icon NOT LIKE 'jfs%'
+    </update>
+
+    <update id="delete">
+        UPDATE
+        <include refid="table_name" />
+        SET mark=1
+        WHERE this.id=#{id}
+    </update>
+
+    <delete id="realDelete">
+        DELETE FROM
+        <include refid="table_name" />
+        WHERE this.id=#{id}
+    </delete>
+
+</mapper>

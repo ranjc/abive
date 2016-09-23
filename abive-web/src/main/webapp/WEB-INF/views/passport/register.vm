@@ -1,0 +1,56 @@
+#set($title="注册")
+
+#set($layout = "layout/passport.vm")
+
+<style>
+    #login-container{height: 100%; min-height:500px;background-image: url(/static/images/wood.jpg);background-size: 100% 100%;}
+    #login-panel{margin: 50px 5%;max-width:350px;float: right;}
+    .input-group{margin:15px 0px;}
+    .panel-register{float: right;margin-right:5px;margin-top: 8px; color: #b61d1d;}
+</style>
+
+<div id="login-container" class="container-fluid">
+    <div class="context-container">
+        <div id="login-panel" class="panel panel-primary">
+            <div class="panel-heading">
+                <a class="panel-register" href="/login?forward=$!{forward}">登录</a>
+                <h4>新会员</h4>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal">
+                    <div class="input-group" id="account-group">
+                        <label for="inputAccount" class="input-group-addon">
+                            @
+                        </label>
+                        <input type="text" class="form-control" id="inputAccount" placeholder="请输入要注册的账号">
+                    </div>
+                    <div class="input-group" id="account-group">
+                        <label for="inputName" class="input-group-addon">
+                            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                        </label>
+                        <input type="text" class="form-control" id="inputName" placeholder="请输入您的姓名">
+                    </div>
+                    <div class="input-group" id="password-group">
+                        <label for="inputPassword1" class="input-group-addon">
+                            <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+                        </label>
+                        <input type="password" class="form-control" id="inputPassword1" placeholder="请输入密码">
+                    </div>
+                    <div class="input-group" id="password-group">
+                        <label for="inputPassword2" class="input-group-addon">
+                            <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+                        </label>
+                        <input type="password" class="form-control" id="inputPassword2" placeholder="请再次输入密码">
+                    </div>
+                    <div class="checkbox" >
+                        <label>
+                            <input type="checkbox" checked> <small>我同意《ABive会员注册协议》</small>
+                        </label>
+                    </div>
+                    <button type="button" class="btn btn-default btn-block">注册</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+

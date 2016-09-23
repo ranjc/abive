@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    #parse("common/layout_head.vm")
+</head>
+<body>
+    <div class="hidden" id="passportKey" modulus="$!{rsaModulus}" exponent="$!{rsaExponent}" forward="$!{forward}"></div>
+
+    #parse("common/layout_navbar_stay.vm")
+
+<div>
+    $!screen_content
+</div>
+
+    #parse("common/layout_footer.vm")
+
+
+    <script src="/static/security/jquery.md5.js"></script>
+    <script src="/static/security/security.js"></script>
+    #loadJs("$!{context}/static/abive/passport.js")
+
+</body>
+</html>

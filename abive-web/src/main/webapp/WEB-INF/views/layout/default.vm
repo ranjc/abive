@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    #parse("common/layout_head.vm")
+</head>
+<body>
+    #parse("common/layout_navbar.vm")
+
+<div>
+    $!screen_content
+</div>
+
+    #parse("common/layout_footer.vm")
+</body>
+</html>

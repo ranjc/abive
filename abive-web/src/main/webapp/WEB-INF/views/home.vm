@@ -1,0 +1,65 @@
+#loadCss("$!{context}/static/home/home.css")
+
+
+<div class="banner">
+    <ul>
+        <li style="background-image: url(/static/images/subway.jpg);">
+            <div class="inner">
+                <h1>在这个快节奏的生活中</h1>
+                <p>您，是否期盼着有人陪您抵达巅峰？</p>
+                <a class="btn" href="$!{context}/login">登录</a>
+            </div>
+        </li>
+        <li style="background-image: url(/static/images/sunset.jpg);">
+            <div class="inner">
+                <h1>释放您的梦想</h1>
+                <p>这个世界原本就属于我们，让我们一起把它便得更美好。</p>
+                <a class="btn" href="$!{context}/login">登录</a>
+            </div>
+        </li>
+        <li style="background-image: url(/static/images/wood.jpg);">
+            <div class="inner">
+                <h1>没有什么能让我们停止脚步</h1>
+                <p>所有的困难都会成为路边的风景。您，还在犹豫吗？</p>
+                <a class="btn" href="$!{context}/login">登录</a>
+            </div>
+        </li>
+        <li style="background-image: url(/static/images/shop.jpg);">
+            <div class="inner">
+                <h1>别再犹豫</h1>
+                <p>加入我们，您不会失望。</p>
+                <a class="btn" href="$!{context}/login">登录</a>
+            </div>
+        </li>
+    </ul>
+</div>
+
+<div class="features">
+    <ul class="wrap">
+        <li class="browser">
+            <b>Lework</b>
+            <p>Lework专注于解决中小企业的团队协作问题。它正在帮助超过30万企业，1亿用户管理日常的事物。</p>
+        </li>
+
+        <li class="keyboard">
+            <b>Appedu(苹果教育)</b>
+            <p>Appedu(苹果教育)能让更多的人以最小的成本学习到最实用的知识。它拥有最创新的学习方法，最专业的辅导队伍，保证您学有所成。</p>
+        </li>
+
+        <li class="height">
+            <b>增强现实</b>
+            <p>我们通过增强现实技术，无论游戏、生活和工作，您都宛如身临其境。</p>
+        </li>
+
+        <li class="responsive">
+            <b>巅峰集结令</b>
+            <p>我们正处于第三次工业革命的关键时期，互联网将带着我们一起席卷全球。您愿意成为我们的一员吗？</p>
+        </li>
+    </ul>
+</div>
+
+<script src="/static/jquery/jquery.event.move.js"></script>
+<script src="/static/jquery/jquery.event.swipe.js"></script>
+
+#loadJs("$!{context}/static/unslider/unslider.min.js")
+#loadJs("$!{context}/static/home/home.js")

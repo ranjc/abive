@@ -1,0 +1,25 @@
+body {
+    color: #a48d66;
+    font: 14px/23px proxima-nova-alt, "Proxima Nova Alt", sans-serif;
+}
+
+h1, h2, h3, h4, b {
+    font-weight: 300;
+    font-family: bree-web, Bree, sans-serif;
+}
+h2 {
+    font-size: 28px;
+    padding-bottom: 60px;
+}
+b {
+    font-weight: 500;
+    font-size: 16px;
+
+    color: #c3522f;
+}
+
+.context-container{
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}

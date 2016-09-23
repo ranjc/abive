@@ -1,0 +1,216 @@
+package com.abive.util.security;
+
+import org.apache.commons.codec.binary.Hex;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
+import javax.crypto.Cipher;
+import java.io.ByteArrayOutputStream;
+import java.math.BigInteger;
+import java.security.*;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.RSAPrivateKeySpec;
+import java.security.spec.RSAPublicKeySpec;
+
+/**
+ * RSA 工具类。提供加密，解密，生成密钥对等方法。
+ * 转载自：http://sunxboy.iteye.com/blog/209156
+ * @author 重构：冉江川 at 2012-12-21
+ */
+public class RSA {
+
+    // 这个值关系到块加密的大小，可以更改，但是不要太大，否则效率会低
+    public static final int KEY_SIZE = 1024;
+
+    private static final Provider DEFAULT_PROVIDER = new BouncyCastleProvider();
+
+    /**
+     * * 生成密钥对 *
+     * @return KeyPair *
+     * @throws Exception
+     */
+    public static KeyPair generateKeyPair() throws Exception {
+        try {
+            KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA", DEFAULT_PROVIDER);
+            keyPairGen.initialize(KEY_SIZE, new SecureRandom());
+            KeyPair keyPair = keyPairGen.generateKeyPair();
+            return keyPair;
+        }
+        catch (Exception e) {
+            // throw new Exception(e.getMessage());
+            throw e;
+        }
+    }
+
+    /**
+     * * 生成公钥 *
+     * @param modulus *
+     * @param publicExponent *
+     * @return RSAPublicKey *
+     * @throws Exception
+     */
+    public static RSAPublicKey generateRSAPublicKey(byte[] modulus, byte[] publicExponent) throws Exception {
+        KeyFactory keyFac = null;
+        try {
+            keyFac = KeyFactory.getInstance("RSA", DEFAULT_PROVIDER);
+        }
+        catch (NoSuchAlgorithmException ex) {
+            // throw new Exception(ex.getMessage());
+            throw ex;
+        }
+
+        RSAPublicKeySpec pubKeySpec = new RSAPublicKeySpec(new BigInteger(modulus), new BigInteger(publicExponent));
+        try {
+            return (RSAPublicKey) keyFac.generatePublic(pubKeySpec);
+        }
+        catch (InvalidKeySpecException ex) {
+            // throw new Exception(ex.getMessage());
+            throw ex;
+        }
+    }
+
+    /**
+     * * 生成私钥 *
+     * @param modulus *
+     * @param privateExponent *
+     * @return RSAPrivateKey *
+     * @throws Exception
+     */
+    public static RSAPrivateKey generateRSAPrivateKey(byte[] modulus, byte[] privateExponent) throws Exception {
+        KeyFactory keyFac = null;
+        try {
+            keyFac = KeyFactory.getInstance("RSA", DEFAULT_PROVIDER);
+        }
+        catch (NoSuchAlgorithmException ex) {
+            // throw new Exception(ex.getMessage());
+            throw ex;
+        }
+
+        RSAPrivateKeySpec priKeySpec = new RSAPrivateKeySpec(new BigInteger(modulus), new BigInteger(privateExponent));
+        try {
+            return (RSAPrivateKey) keyFac.generatePrivate(priKeySpec);
+        }
+        catch (InvalidKeySpecException ex) {
+            // throw new Exception(ex.getMessage());
+            throw ex;
+        }
+    }
+
+    /**
+     * * 加密 *
+     * @param pk
+     *            加密的密钥 *
+     * @param data
+     *            待加密的明文数据 *
+     * @return 加密后的数据 *
+     * @throws Exception
+     */
+    public static byte[] encrypt(PublicKey pk, byte[] data) throws Exception {
+        try {
+            Cipher cipher = Cipher.getInstance("RSA", DEFAULT_PROVIDER);
+            cipher.init(Cipher.ENCRYPT_MODE, pk);
+            int blockSize = cipher.getBlockSize();// 获得加密块大小，如：加密前数据为128个byte，而key_size=1024
+            // 加密块大小为127
+            // byte,加密后为128个byte;因此共有2个加密块，第一个127
+            // byte第二个为1个byte
+            int outputSize = cipher.getOutputSize(data.length);// 获得加密块加密后块大小
+            int leavedSize = data.length % blockSize;
+            int blocksSize = leavedSize != 0 ? data.length / blockSize + 1 : data.length / blockSize;
+            byte[] raw = new byte[outputSize * blocksSize];
+            int i = 0;
+            while (data.length - i * blockSize > 0) {
+                if (data.length - i * blockSize > blockSize)
+                    cipher.doFinal(data, i * blockSize, blockSize, raw, i * outputSize);
+                else
+                    cipher.doFinal(data, i * blockSize, data.length - i * blockSize, raw, i * outputSize);
+                // 这里面doUpdate方法不可用，查看源代码后发现每次doUpdate后并没有什么实际动作除了把byte[]放到
+                // ByteArrayOutputStream中，而最后doFinal的时候才将所有的byte[]进行加密，可是到了此时加密块大小很可能已经超出了
+                // OutputSize所以只好用dofinal方法。
+
+                i++;
+            }
+            return raw;
+        }
+        catch (Exception e) {
+            // throw new Exception(e.getMessage());
+            throw e;
+        }
+    }
+
+    /**
+     * * 解密 *
+     * @param pk
+     *            解密的密钥 *
+     * @param raw
+     *            已经加密的数据 *
+     * @return 解密后的明文 *
+     * @throws Exception
+     */
+    @SuppressWarnings("static-access")
+    public static byte[] decrypt(PrivateKey pk, byte[] raw) throws Exception {
+        try {
+            Cipher cipher = Cipher.getInstance("RSA", DEFAULT_PROVIDER);
+            cipher.init(cipher.DECRYPT_MODE, pk);
+            int blockSize = cipher.getBlockSize();
+            ByteArrayOutputStream bout = new ByteArrayOutputStream(64);
+            int j = 0;
+            while (raw.length - j * blockSize > 0) {
+                bout.write(cipher.doFinal(raw, j * blockSize, blockSize));
+                j++;
+            }
+            return bout.toByteArray();
+        }
+        catch (Exception e) {
+            // throw new Exception(e.getMessage());
+            throw e;
+        }
+    }
+
+    /**
+     * 解密字符串
+     * @param pk
+     * @param str
+     * @return
+     * @throws Exception
+     */
+    public static String decryptString(PrivateKey pk, String str) throws Exception {
+        byte[] en_str = Hex.decodeHex(str.toCharArray());
+        byte[] de_str = decrypt(pk, en_str);
+        String strTemp = new String(de_str);
+        StringBuffer sb = new StringBuffer(strTemp);
+        return sb.reverse().toString();
+    }
+
+    /**
+     * String转16位字节
+     * @param src
+     * @return
+     */
+    public static byte[] hexStr2Bytes(String src) {
+        int m = 0, n = 0;
+        int l = src.length() / 2;
+        byte[] retVal = new byte[l];
+        for (int i = 0; i < l; i++) {
+            m = i * 2;
+            n = m + 2;
+            retVal[i] = (byte) (Integer.parseInt(src.substring(m, n), 16));
+        }
+        return retVal;
+    }
+
+    /**
+     * * *
+     * @param args *
+     * @throws Exception
+     */
+    @SuppressWarnings("unused")
+    public static void main(String[] args) throws Exception {
+        KeyPair kp = RSA.generateKeyPair();
+        String test = "Rjc123@Xxx456#";
+        byte[] en_test = encrypt(kp.getPublic(), test.getBytes());
+        byte[] de_test = decrypt(kp.getPrivate(), en_test);
+        System.out.println(new String(en_test));
+        System.out.println(new String(de_test));
+    }
+}
